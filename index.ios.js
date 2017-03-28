@@ -8,5 +8,15 @@ export default function prompt(
     callbackOrButtons?: ?((text: string) => void) | Object,
     options?: Object
 ): void {
-    AlertIOS.prompt(title, message, callbackOrButtons, options.type, options.defaultValue);
+    let type = 'plain-text';
+    if (options && options.type) {
+        type = options.type;
+    }
+
+    let defaultValue = '';
+    if (options && options.defaultValue) {
+        defaultValue = options.defaultValue;
+    }
+
+    AlertIOS.prompt(title, message, callbackOrButtons, type, defaultValue);
 };
