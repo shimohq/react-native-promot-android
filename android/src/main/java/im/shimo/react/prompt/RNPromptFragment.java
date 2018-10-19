@@ -1,15 +1,18 @@
 package im.shimo.react.prompt;
 
+import android.support.v7.app.AlertDialog;
+import android.os.Bundle;
+import android.content.Context;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.text.InputType;
-import android.view.LayoutInflater;
-import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.view.inputmethod.InputMethodManager;
+import android.text.InputType;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.widget.TextView;
 
 import javax.annotation.Nullable;
 
@@ -25,8 +28,15 @@ public class RNPromptFragment extends DialogFragment implements DialogInterface.
     /* package */ static final String ARG_STYLE = "style";
     /* package */ static final String ARG_DEFAULT_VALUE = "defaultValue";
     /* package */ static final String ARG_PLACEHOLDER = "placeholder";
+    /* package */ static final String ARG_PLACEHOLDER_COLOR = "placeholderColor";
+    /* package */ static final String ARG_DISABLE_FULL_SCREEN_UI = "disableFullscreenUI";
+    /* package */ static final String ARG_HIGHLIGHT_COLOR = "highlightColor";
+    /* package */ static final String ARG_COLOR = "color";
+    /* package */ static final String ARG_BUTTON_COLOR = "buttonColor";
 
     private EditText mInputText;
+
+    private Integer mButtonColor;
 
     public enum PromptTypes {
         TYPE_DEFAULT("default"),
@@ -95,7 +105,11 @@ public class RNPromptFragment extends DialogFragment implements DialogInterface.
             builder.setItems(arguments.getCharSequenceArray(ARG_ITEMS), this);
         }
 
-        AlertDialog alertDialog = builder.create();
+        if (arguments.containsKey(ARG_BUTTON_COLOR)) {
+            mButtonColor = arguments.getInt(ARG_BUTTON_COLOR);
+        }
+
+        final AlertDialog alertDialog = builder.create();
 
         // input style
         LayoutInflater inflater = LayoutInflater.from(activityContext);
@@ -104,9 +118,14 @@ public class RNPromptFragment extends DialogFragment implements DialogInterface.
             case "shimo":
                 input = (EditText) inflater.inflate(R.layout.edit_text, null);
                 break;
+            case "cust":
+                input = (EditText) inflater.inflate(R.layout.cust_edit_text, null);
+                break;
             default:
                 input = new EditText(activityContext);
         }
+
+
 
         // input type
         int type = InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
@@ -134,6 +153,18 @@ public class RNPromptFragment extends DialogFragment implements DialogInterface.
         }
         input.setInputType(type);
 
+        if (arguments.containsKey(ARG_HIGHLIGHT_COLOR)) {
+            input.setHighlightColor(arguments.getInt(ARG_HIGHLIGHT_COLOR));
+        }
+
+        if (arguments.containsKey(ARG_DISABLE_FULL_SCREEN_UI)) {
+            boolean disableFullscreenUI = arguments.getBoolean(ARG_DISABLE_FULL_SCREEN_UI);
+            if (disableFullscreenUI) {
+                int imeOptions = input.getImeOptions();
+                input.setImeOptions(imeOptions | EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+            }
+        }
+
         if (arguments.containsKey(ARG_DEFAULT_VALUE)) {
             String defaultValue = arguments.getString(ARG_DEFAULT_VALUE);
             if (defaultValue != null) {
@@ -143,20 +174,60 @@ public class RNPromptFragment extends DialogFragment implements DialogInterface.
             }
         }
 
+
+        if (arguments.containsKey(ARG_COLOR)) {
+            input.setTextColor(arguments.getInt(ARG_COLOR));
+        }
+
         if (arguments.containsKey(ARG_PLACEHOLDER)) {
             input.setHint(arguments.getString(ARG_PLACEHOLDER));
+            if (arguments.containsKey(ARG_PLACEHOLDER_COLOR)) {
+                input.setHintTextColor(arguments.getInt(ARG_PLACEHOLDER_COLOR));
+            }
         }
         alertDialog.setView(input, 50, 15, 50, 0);
 
         mInputText = input;
+
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
+        {
+            @Override
+            public void onShow(final DialogInterface dialog)
+            {
+                input.requestFocus();
+                ((InputMethodManager) alertDialog.getContext().getSystemService(Context.INPUT_METHOD_SERVICE)).showSoftInput(input, 0);
+            }
+        });
+
+
+        input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick();
+                }
+                return false;
+            }
+        });
+
         return alertDialog;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = this.createDialog(getActivity(), getArguments());
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         return dialog;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (mButtonColor != null) {
+            AlertDialog d = (AlertDialog) getDialog();
+            d.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(mButtonColor);
+            d.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(mButtonColor);
+            d.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(mButtonColor);
+        }
     }
 
     @Override

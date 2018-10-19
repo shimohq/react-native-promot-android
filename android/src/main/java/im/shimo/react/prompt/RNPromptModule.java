@@ -42,6 +42,11 @@ public class RNPromptModule extends ReactContextBaseJavaModule implements Lifecy
     /* package */ static final String KEY_STYLE = "style";
     /* package */ static final String KEY_DEFAULT_VALUE = "defaultValue";
     /* package */ static final String KEY_PLACEHOLDER = "placeholder";
+    /* package */ static final String KEY_PLACEHOLDER_COLOR = "placeholderColor";
+    /* package */ static final String KEY_DISABLE_FULL_SCREEN_UI = "disableFullscreenUI";
+    /* package */ static final String KEY_HIGHLIGHT_COLOR = "highlightColor";
+    /* package */ static final String KEY_COLOR = "color";
+    /* package */ static final String KEY_BUTTON_COLOR = "buttonColor";
 
     /* package */ static final Map<String, Object> CONSTANTS = MapBuilder.<String, Object>of(
             ACTION_BUTTON_CLICKED, ACTION_BUTTON_CLICKED,
@@ -127,6 +132,15 @@ public class RNPromptModule extends ReactContextBaseJavaModule implements Lifecy
         if (options.hasKey(KEY_CANCELABLE)) {
             args.putBoolean(KEY_CANCELABLE, options.getBoolean(KEY_CANCELABLE));
         }
+        if (options.hasKey(KEY_DISABLE_FULL_SCREEN_UI)) {
+            args.putBoolean(KEY_DISABLE_FULL_SCREEN_UI, options.getBoolean(KEY_DISABLE_FULL_SCREEN_UI));
+        }
+        if (options.hasKey(KEY_HIGHLIGHT_COLOR) && !options.isNull(KEY_HIGHLIGHT_COLOR)) {
+            args.putInt(KEY_HIGHLIGHT_COLOR, options.getInt(KEY_HIGHLIGHT_COLOR));
+        }
+        if (options.hasKey(KEY_COLOR) && !options.isNull(KEY_COLOR)) {
+            args.putInt(KEY_COLOR, options.getInt(KEY_COLOR));
+        }
         if (options.hasKey(KEY_TYPE)) {
             args.putString(KEY_TYPE, options.getString(KEY_TYPE));
         }
@@ -138,6 +152,12 @@ public class RNPromptModule extends ReactContextBaseJavaModule implements Lifecy
         }
         if (options.hasKey(KEY_PLACEHOLDER)) {
             args.putString(KEY_PLACEHOLDER, options.getString(KEY_PLACEHOLDER));
+        }
+        if (options.hasKey(KEY_PLACEHOLDER_COLOR) && !options.isNull(KEY_PLACEHOLDER_COLOR)) {
+            args.putInt(KEY_PLACEHOLDER_COLOR, options.getInt(KEY_PLACEHOLDER_COLOR));
+        }
+        if (options.hasKey(KEY_BUTTON_COLOR) && !options.isNull(KEY_BUTTON_COLOR)) {
+            args.putInt(KEY_BUTTON_COLOR, options.getInt(KEY_BUTTON_COLOR));
         }
         fragmentManagerHelper.showNewAlert(mIsInForeground, args, callback);
     }
