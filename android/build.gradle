@@ -30,8 +30,8 @@ repositories {
 }
 
 dependencies {
-    implementation "com.android.support:appcompat-v7:27.1.1"
-    implementation 'com.facebook.react:react-native:+'
-    implementation fileTree( dir: "libs", includes: ['*.jar'] )
+    compile "com.android.support:appcompat-v7:27.1.1"
+    compile 'com.facebook.react:react-native:+'
+    compile fileTree( dir: "libs", includes: ['*.jar'] )
 }
 
