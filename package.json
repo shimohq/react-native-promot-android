@@ -1,6 +1,6 @@
 {
     "name": "react-native-prompt-android",
-    "version": "0.3.5",
+    "version": "0.3.6",
     "description": "Polyfill for Alert.prompt on Android",
     "repository": {
         "type": "git",
