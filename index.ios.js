@@ -1,6 +1,4 @@
-import {
-    AlertIOS
-} from 'react-native';
+import { Alert } from "react-native";
 
 export default function prompt(
     title: ?string,
@@ -8,5 +6,12 @@ export default function prompt(
     callbackOrButtons?: ?((text: string) => void) | Object,
     options?: Object
 ): void {
-    AlertIOS.prompt(title, message, callbackOrButtons, options.type, options.defaultValue, options.keyboardType);
-};
+    Alert.prompt(
+        title,
+        message,
+        callbackOrButtons,
+        options.type,
+        options.defaultValue,
+        options.keyboardType
+    );
+}
