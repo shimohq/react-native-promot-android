@@ -1,6 +1,7 @@
 # react-native-prompt-android
 A polyfill library for Alert.prompt on Android platform, working both on Android and iOS platform(iOS using [AlertIOS.prompt](http://facebook.github.io/react-native/docs/alertios.html#prompt))
 
+Version 1.x recommends react-native >= 0.60.0 for Android 64bit builds and Android X support.
 
 ### Installation
 
